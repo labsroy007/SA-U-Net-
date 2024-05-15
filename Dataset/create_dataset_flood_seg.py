@@ -19,50 +19,44 @@ import keras
 
 
 # Function to return the list of input_arr and output dataset for training the model
-# 'path' - path to the folder containing the data
+# Enter the dataset path of input images in 'inp_path' and their corresponding segmentation masks path in 'out_path'
 
-def get_dataset(path):
+def get_dataset(inp_path, out_path):
+  l = os.listdir(inp_path)
 
-  p = path
-  l = os.listdir(p)
-
-  inp = []
-  out = []
+  input_arr = []
+  output = []
+  sparse = []
 
   for i in l:
-    if i[-4:]=='.png':
-      continue
+    ip = inp_path + i
+    op = out_path + i[:-4] + '_lab.png'
 
-    ip = p + i
-    op = p + i[:-4] + '.png'
+    inp = cv.imread(ip)
+    inp = cv.resize(inp, (512, 512), interpolation=cv.INTER_AREA)
 
-    input_arr = cv.imread(ip)
-    output = cv.imread(op)
+    out = cv.imread(op)
+    out = cv.cvtColor(out, cv.COLOR_BGR2GRAY)
+    out = cv.resize(out, (512, 512), interpolation=cv.INTER_NEAREST)
 
-    output = cv.cvtColor(output, cv.COLOR_BGR2GRAY)
-    output = np.where(output>0, 1, 0)
-    output = np.array(output, dtype=np.uint8)
+    inp1, inp2, inp3, inp4 = inp[0:256, 0:256], inp[256:512, 0:256], inp[0:256, 256:512], inp[256:512, 256:512]
+    out1, out2, out3, out4 = out[0:256, 0:256], out[256:512, 0:256], out[0:256, 256:512], out[256:512, 256:512]
 
-    size = 256
-    sh = output.shape
-    h, w = int(sh[0]/size), int(sh[1]/size)
+    inp = []
+    out = []
 
-    in_arr = []
-    out_arr = []
+    inp.append(inp1)
+    inp.append(inp2)
+    inp.append(inp3)
+    inp.append(inp4)
 
-    for k in range(h):
-      for l in range(w):
+    out.append(out1)
+    out.append(out2)
+    out.append(out3)
+    out.append(out4)
 
-        k1 = k * size
-        l1 = l * size
+    input_arr.extend(inp)
+    output.extend(out)
 
-        if not 1 in output[k1:k1+size, l1:l1+size]:
-          continue
+  return input_arr, output
 
-        out_arr.append(output[k1:k1+size, l1:l1+size])
-        in_arr.append(input_arr[k1:k1+size, l1:l1+size])
-
-    inp.extend(in_arr)
-    out.extend(out_arr)
-
-  return inp, out
