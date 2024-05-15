@@ -59,13 +59,13 @@ def get_partitions(input_arr, output, count, f):
   return in_arr, out_arr
 
 
-# Function to return the list of input_arr and output dataset for training the model
+# Function to return the list of input_arr and output dataset for training the model (this function extracts dataset from one subfolder of the entire dataset at a time)
 # 'path' - path to the folder containing the data
 # 'prob' - for determining 'f', to pass to the get_partitions function
 # 'count' - passing it to the get_partitions function
 # the last two parameters are required if the input_arr image needs partition
 
-def get_dataset(path, prob=-1, count=-1):
+def get_dataset(path, prob, count):
 
   p = path
   l = os.listdir(p)
@@ -83,26 +83,19 @@ def get_dataset(path, prob=-1, count=-1):
       if j[-10:]=='_label.bmp':
         continue
 
+      input_arr = cv.imread(sp+j)
+      input_arr = np.array(input_arr, dtype=np.uint8)
+      
       output = cv.imread(sp+j[:-4]+'_label.bmp')
-
-
       output = cv.cvtColor(output, cv.COLOR_BGR2GRAY)
       output = np.where(output>0, 1, 0)
       output = np.array(output, dtype=np.uint8)
 
+      f = np.random.randint(0,prob)
+      in_arr, out_arr = get_partitions(input_arr, output, count, f)
 
+      inp.extend(in_arr)
+      out.extend(out_arr)
 
-      if not count==-1:
-        a = np.count_nonzero(output == 1)
-        ab = a/(1024*1024)
-        sparse.append(ab)
-
-
-      else:
-        a = np.count_nonzero(output == 1)
-        ab = a/(256*256)
-        sparse.append(ab)
-
-  return sparse
-
+  return inp, out
 
