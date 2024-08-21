@@ -1,6 +1,7 @@
 # SA U-Net++
 
-This repository stores the code and resources for our research work on Self-Attention based U-Net++.
+This repository stores the code and resources for our research work on:
+```A Lightweight Self Attention based Multi-Task Deep Learning Model for Industrial Solar Panel and Environmental Monitoring```
 
 In this research, we have worked on proposing a novel Deep Learning solution, named SA U-Net++, for four environmental challenges: Solar Panel Segmentation, Solar Panel Defect Identification, Flood Segmentation and Oil Spill Segmentation.
 
@@ -22,4 +23,7 @@ The repository contains the following folders:
   
 - Testing: Contains functionalities for testing the performance of the models
 
-
+Please cite our paper:
+```
+Tuhinangshu Gangopadhyay, Debojyoti Pal, Tanushree Meena, Sudipta Roy, “A Lightweight Self Attention based Multi-Task Deep Learning Model for Industrial Solar Panel and Environmental Monitoring," IEEE Transactions on Emerging Topics in Computational Intelligence, DOI: 10.1109/TETCI.2024.3444590, Sept 2024
+```
